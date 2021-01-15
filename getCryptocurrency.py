@@ -16,26 +16,38 @@ import os
 import datetime
 import csv
 
-ENDPOINT = 'https://api.coin.z.com/public'
-PATH     = '/v1/ticker'
+def getNowDtStr():
+    """
+    現時刻の文字列(%Y%m%d%H%M%S)を返す
+    """
+    dt_now = datetime.datetime.now()
+    dt_str = dt_now.strftime('%Y%m%d%H%M%S')
+    return dt_str
 
-DIR_PATH = os.getcwd()
+def getCrypto(path):
+    """
+    仮想通貨の最新レートを取得する
+    第1引数:GMOコインのエンドポイント
+    戻値:辞書型の仮想通貨情報
+    """
+    res = requests.get(path)
+    dic = res.json()
+    return dic
 
-# 仮想通貨の最新レートを取得する
-crypto_res = requests.get(ENDPOINT + PATH)
-crypto_dic = crypto_res.json()
+def getFilepath(dir_path):
+    """
+    出力するtsvのファイルパスを作成する
+    ファイル名は cryptocurrency_[datetime].tsv とする
+    第1引数:ディレクトリパス
+    戻値:ファイルパス
+    """
+    dt_str = getNowDtStr()
+    filepath = dir_path + '/cryptocurrency_{0:s}.tsv'.format(dt_str)
+    print("時刻:" + dt_str + " 保存先のパス:" + filepath)
+    return filepath
 
-# 出力tsvのパスを作成する
-# ファイル名は cryptocurrency_[datetime].tsv とする
-dt_now = datetime.datetime.now()
-dt_str = dt_now.strftime('%Y%m%d%H%M%S')
-filepath = DIR_PATH + '/cryptocurrency_{0:s}.tsv'.format(dt_str)
-
-print("実行開始 時刻:" + dt_str + " 保存先のパス:" + filepath)
-
-# ステータスが0(正常)かを確認する
-if crypto_dic['status'] == 0:
-    for rows in crypto_dic['data']:
+def createTsv(dic):
+    for rows in dic['data']:
         """
         timestamp: 約定時の時間(日本時間に変換)
         symbol: 銘柄(JPYは日本円)
@@ -50,7 +62,6 @@ if crypto_dic['status'] == 0:
         ts = datetime.datetime.fromisoformat(rows['timestamp'].replace('Z', '+00:00'))
         j_ts = ts + datetime.timedelta(hours=9) 
         rows['timestamp'] = j_ts.strftime('%Y%m%d%H%M%S')
-
         # tsv形式で保存する
         with open(filepath, 'a', encoding="UTF-8") as file:
             writer = csv.writer(file, delimiter='\t', lineterminator='\n')
@@ -61,8 +72,20 @@ if crypto_dic['status'] == 0:
                             rows['ask'],
                             rows['bid'],
                             rows['volume']])
-else:
-    # ログなどにエラーを出す際はこちらに書く
-    print("status error.")
 
-print("実行終了")
+if __name__ == '__main__':
+    endpoint = 'https://api.coin.z.com/public'
+    path = '/v1/ticker'
+    dir_path = os.getcwd()
+    
+    crypto_dic = getCrypto(endpoint + path)
+    filepath = getFilepath(dir_path)
+
+    # ステータスが0(正常)かを確認する
+    if crypto_dic['status'] == 0:
+        createTsv(crypto_dic)
+    else:
+        # ログなどにエラーを出す際はこちらに書く
+        print("status error.")
+
+    print("終了時刻:"+getNowDtStr())
