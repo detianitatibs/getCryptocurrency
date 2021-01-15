@@ -33,3 +33,18 @@ python getCryptocurrency.py
 pip install pytest
 pytest getCryptocurrencyTest.py
 ```
+
+## `getCryptocurrencyGCF.py`
+GCF版。  
+ローカル実行環境として、[functions-framework](https://github.com/GoogleCloudPlatform/functions-framework-python)を利用する。  
+
+
+```bash
+pip install functions-framework
+
+# 起動コマンド
+functions-framework --target=main --source=getCryptocurrencyGCF.py --signature-type=event
+
+# テストコマンド
+curl -d '{"data": "test"}' -X POST -H "Content-Type: application/json" http://localhost:8080
+```
