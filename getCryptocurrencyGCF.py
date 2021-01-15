@@ -10,7 +10,7 @@ __status__ = "development"
 __version__ = "0.0.1"
 __date__    = "16 January 2021"
 
-# ISSURE:functions-frameworkで別ファイルをimportする手段が分からない
+# ISSUE:functions-frameworkで別ファイルをimportする手段が分からない
 import getCryptocurrency
 
 def main(event, context): # for background functions
