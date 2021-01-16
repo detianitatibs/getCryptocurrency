@@ -40,10 +40,13 @@ def uploadGcs(filepath, dt_str):
     except:
         print("GCSにUpload失敗")
 
-def main(event, context): # for background functions
+def getCryptocurrencyToGCS(event, context): # for background functions
     endpoint = 'https://api.coin.z.com/public'
     path = '/v1/ticker'
-    dir_path = os.getcwd()
+
+    # Cloud FunctionsではCurrent DirectoryはRead Onlyなので
+    # /tmp以下に保存するようにする
+    dir_path = '/tmp'
     dt_str = gc.getNowDtStr()
     
     crypto_dic = gc.getCrypto(endpoint + path)

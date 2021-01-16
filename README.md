@@ -34,17 +34,24 @@ pip install pytest
 pytest getCryptocurrencyTest.py
 ```
 
-## `getCryptocurrencyGCF.py`
+## `main.py`
 GCF版。  
 ローカル実行環境として、[functions-framework](https://github.com/GoogleCloudPlatform/functions-framework-python)を利用する。  
 
 
 ```bash
+# functions-frameworkのインストール
 pip install functions-framework
 
 # 起動コマンド
-functions-framework --target=main --source=getCryptocurrencyGCF.py --signature-type=event
+functions-framework --target=main --source=main.py --signature-type=event
 
 # テストコマンド
 curl -d '{"data": "test"}' -X POST -H "Content-Type: application/json" http://localhost:8080
+
+# cloud storageのインストール
+google-cloud-storagey
+
+# gcloudデプロイコマンド
+gcloud functions deploy getCryptocurrencyToGCS --runtime=python37 --trigger-topic=getCryptocurrencyToGCS --env-vars-file=.env.yaml --memory=128MB
 ```
