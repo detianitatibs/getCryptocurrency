@@ -13,10 +13,38 @@ __date__    = "16 January 2021"
 import getCryptocurrency as gc
 import os
 
+from google.cloud import storage
+
+def uploadGcs(filepath, dt_str):
+    """
+    ファイルをGCSにアップロードする
+    第1引数:tsvファイルを作成したファイルパスとファイル名
+    第2引数:%Y%m%d%H%M%S形式の文字列
+    """
+    # envよりバケット名を取得する
+    bucket_name = os.environ.get('BUCKET')
+
+    # GCSのファイル名を作成する
+    filename = filepath.split('/')[-1]
+    filename = "/".join([dt_str[:4], dt_str[4:6], dt_str[6:8], filename])
+
+    # GCSにアップロードする
+    print("GCSにUpload開始")
+    print("BUCKET:{} BLOB:{}".format(bucket_name, filename))
+    try:
+        storage_client = storage.Client()
+        bucket = storage_client.get_bucket(bucket_name)
+        blob = bucket.blob(filename)
+        blob.upload_from_filename(filepath)
+        print("GCSにUpload完了")
+    except:
+        print("GCSにUpload失敗")
+
 def main(event, context): # for background functions
     endpoint = 'https://api.coin.z.com/public'
     path = '/v1/ticker'
     dir_path = os.getcwd()
+    dt_str = gc.getNowDtStr()
     
     crypto_dic = gc.getCrypto(endpoint + path)
     filepath = gc.getFilepath(dir_path)
@@ -24,6 +52,8 @@ def main(event, context): # for background functions
     # ステータスが0(正常)かを確認する
     if crypto_dic['status'] == 0:
         gc.createTsv(crypto_dic, filepath)
+        uploadGcs(filepath, dt_str)
+
     else:
         # ログなどにエラーを出す際はこちらに書く
         print("status error.")
