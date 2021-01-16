@@ -16,11 +16,14 @@ import os
 import datetime
 import csv
 
-def getNowDtStr():
+def getNowDtStr(isConvertJST=False):
     """
     現時刻の文字列(%Y%m%d%H%M%S)を返す
+    第1引数:実施環境の時刻がUTCの場合はTrueにすることでJSTに変換する
     """
     dt_now = datetime.datetime.now()
+    if isConvertJST :
+        dt_now = dt_now + datetime.timedelta(hours=9)
     dt_str = dt_now.strftime('%Y%m%d%H%M%S')
     return dt_str
 
@@ -34,14 +37,14 @@ def getCrypto(path):
     dic = res.json()
     return dic
 
-def getFilepath(dir_path):
+def getFilepath(dir_path, isConvertJST=False):
     """
     出力するtsvのファイルパスを作成する
     ファイル名は cryptocurrency_[datetime].tsv とする
     第1引数:ディレクトリパス
     戻値:ファイルパス
     """
-    dt_str = getNowDtStr()
+    dt_str = getNowDtStr(isConvertJST)
     filepath = dir_path + '/cryptocurrency_{0:s}.tsv'.format(dt_str)
     print("時刻:" + dt_str + " 保存先のパス:" + filepath)
     return filepath

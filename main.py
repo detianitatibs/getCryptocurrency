@@ -47,10 +47,13 @@ def getCryptocurrencyToGCS(event, context): # for background functions
     # Cloud FunctionsではCurrent DirectoryはRead Onlyなので
     # /tmp以下に保存するようにする
     dir_path = '/tmp'
-    dt_str = gc.getNowDtStr()
+
+    # Cloud FunctionではUTCなので、JSTに変換する
+    isConvertJST = True
+    dt_str = gc.getNowDtStr(isConvertJST)
     
     crypto_dic = gc.getCrypto(endpoint + path)
-    filepath = gc.getFilepath(dir_path)
+    filepath = gc.getFilepath(dir_path, isConvertJST)
 
     # ステータスが0(正常)かを確認する
     if crypto_dic['status'] == 0:
