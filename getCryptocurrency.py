@@ -46,7 +46,7 @@ def getFilepath(dir_path):
     print("時刻:" + dt_str + " 保存先のパス:" + filepath)
     return filepath
 
-def createTsv(dic):
+def createTsv(dic, filepath):
     for rows in dic['data']:
         """
         timestamp: 約定時の時間(日本時間に変換)
@@ -83,7 +83,7 @@ if __name__ == '__main__':
 
     # ステータスが0(正常)かを確認する
     if crypto_dic['status'] == 0:
-        createTsv(crypto_dic)
+        createTsv(crypto_dic, filepath)
     else:
         # ログなどにエラーを出す際はこちらに書く
         print("status error.")
