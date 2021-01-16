@@ -74,7 +74,7 @@ def createTsv(dic, filepath):
                             rows['symbol'],
                             rows['last'],
                             rows['high'],
-                            rows['low']
+                            rows['low'],
                             rows['ask'],
                             rows['bid'],
                             rows['volume']])
