@@ -1,0 +1,5 @@
+README.md
+getCryptocurrencyTest.py
+test.py
+__pycache__/*
+.pytest_cache/*
