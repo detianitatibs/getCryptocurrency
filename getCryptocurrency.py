@@ -66,7 +66,7 @@ def createTsv(dic, filepath):
         # timestampを日本時間にして、datetime型の文字列に変形する
         ts = datetime.datetime.fromisoformat(rows['timestamp'].replace('Z', '+00:00'))
         j_ts = ts + datetime.timedelta(hours=9) 
-        rows['timestamp'] = j_ts.strftime('%Y%m%d%H%M%S')
+        rows['timestamp'] = j_ts.strftime('%Y-%m-%d %H:%M:%S')
         # tsv形式で保存する
         with open(filepath, 'a', encoding="UTF-8") as file:
             writer = csv.writer(file, delimiter='\t', lineterminator='\n')
