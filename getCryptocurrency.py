@@ -57,6 +57,8 @@ def createTsv(dic, filepath):
         ask: 現在の売注文の最良気配値
         bid: 現在の買注文の最良気配値
         volume: 24時間の取引量
+        第1引数:辞書型の仮想通貨情報
+        第2引数:ファイルパス
         """
         # timestampを日本時間にして、datetime型の文字列に変形する
         ts = datetime.datetime.fromisoformat(rows['timestamp'].replace('Z', '+00:00'))
